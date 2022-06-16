@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+       * {
+           margin: 0;
+           padding: 0;
+       }
+       li {
+            list-style: none;
+       }
+       .bjt {
+           width: 1000px;
+           height:409px;
+           margin: 150px auto;
+           border-radius: 7px;
+           position: relative;
+           overflow: hidden;
+       }
+       .bjt ul {
+           position: absolute;
+           top: 0;
+           left: 0;
+       }
+       .bjt img {
+           border-radius: 7px;
+       }
+       .lis {
+           width: 7000px;
+           
+       }
+       .lis li {
+           float: left;
+           list-style: none;
+       }
+       #prev {
+           position: absolute;
+           top: 200px;
+           left: 10px;
+           cursor: pointer;
+           transition: all 1s;
+           opacity: 0.5;
+           display: none;
+       }
+       #next {
+           position: absolute;
+           top: 200px;
+           right:10px;
+           cursor: pointer;
+           transition: all 1s;
+           opacity: 0.5;
+           display: none;
+       } 
+       /* 画龙点睛 */
+       #prev:hover {
+           opacity: 1;
+           transform: rotate(-360deg);
+       }
+       #next:hover {
+           opacity: 1;
+           transform: rotate(360deg);
+       }
+       .ols {
+           position: absolute;
+           bottom: 20px;
+           left: 50%;
+           transform: translateX(-50%);
+       }
+       .ols li {
+           float: left;
+           border: 2px solid rgba(255, 255, 255,0.5);
+           width: 15px;
+           height: 15px;
+           border-radius: 50%;
+           margin: 0 8px;
+           cursor: pointer;
+           transition: all 0.5s;
+       }
+       .ols li:hover {
+           opacity: 1;
+           transform: scale(1.5);
+       }
+       .ols .show {
+           background-color: rgba(255, 255, 255,0.5);
+       }
+    </style>
+</head>
+<body>
+    <div class="bjt" >
+       <ul class="lis" >
+           <li><img src="img/1.jpg" alt=""></li>
+           <li><img src="img/2.jpg" alt=""></li>
+           <li><img src="img/3.jpg" alt=""></li>
+           <li><img src="img/4.jpg" alt=""></li>
+           <li><img src="img/5.jpg" alt=""></li>
+           <li><img src="img/6.jpg" alt=""></li>
+           <!-- <li><img src="img/1.jpg" alt=""></li>  手动复制 -->
+       </ul>
+       <img src="img/l.png" id="prev">
+       <img src="img/r.png" id="next">
+       <ol class="ols" >
+          <!-- <li class="show" ></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li> -->
+       </ol>
+    </div>
+
+    <script>
+       var bjt = document.querySelector('.bjt')
+       var prev = document.querySelector('#prev')
+       var next = document.querySelector('#next')
+       var ul =document.querySelector('.bjt .lis')
+       var imgs = document.querySelectorAll('.bjt .lis img')
+       var ol =document.querySelector('.bjt .ols') //等价于 var ol =bjt.querySelector('.ols')
+       //1. 鼠标经过背景图 就显示和隐藏左右按钮
+       bjt.onmouseenter = function(){
+           prev.style.display ='block'
+           next.style.display ='block'
+           //10.2鼠标经过清除自动播放
+           clearInterval(zidong)
+           //清除定时器变量
+           time = null
+       }
+       bjt.onmouseleave = function(){
+           prev.style.display ='none'
+           next.style.display ='none'
+           //10.3鼠标离开继续自动播放
+           zidong =setInterval(function(){
+            //10.1手动调用点击事件
+            next.click()
+        },1500)
+       }
+       //2. 动态生成小圆圈  有几张图片，我就生成几个小圆圈
+       for(var i=0; i<imgs.length; i++){
+           //2.1创建一个小li 
+           var li = document.createElement('li')
+           //4.5 记录当前小圆圈的索引号 通过自定义属性来做
+           li.setAttribute('index',i)
+           //2.2 把小li插入到ol 里面
+           ol.appendChild(li)
+           //3.小圆圈的排他思想 我们可以直接在生成小圆圈的同时直接绑定点击事件
+           li.onclick=function(){
+               //3.1干掉所有人 把所有的小li 清除 show 类名
+               for(var i=0; i<ol.children.length; i++){
+                   ol.children[i].className =''
+                   //3.2留下我自己  当前的小li 设置show类名
+                   this.className='show'
+                   //4. 点击小圆圈，移动图片 当然移动的是 ul  封装计时器函数
+                   function animate(obj, target){
+                       //4.4 先清除以前的定时器，只保留当前的一个定时器执行
+                       clearInterval(obj.timer);
+                       //4.1(上)绑定定时器
+                       obj.timer = setInterval(function(){
+                       //4.3步长值写到定时器的里面 并改成整数
+                       var step =(target-obj.offsetLeft)/10
+                       step =step > 0 ? Math.ceil(step) :Math.floor(step) 
+                       //4.2如果移动距离够了 停止动画 本质是停止定时器
+                       if(obj.offsetLeft===target){
+                         clearInterval(obj.timer)
+                     }
+                    //4.1(下)绑定定时器
+                    obj.style.left = obj.offsetLeft + step +'px'
+                   },16)
+                 }
+                   //4.6 当我们点击了某个小li 就拿到当前小li的索引号
+                   var index = this.getAttribute('index')
+                   //8 当我们点击了某个小li 就要把这个li 的索引号给 n
+                   n=index;
+                   //8.1 当我们点击了某个小li 就要把这个li 的索引号给 c
+                   c=index;
+                   //4.7 ul 的移动距离 小圆圈的索引号 乘以 图片的宽度 注意是负值
+                   animate(ul,-index*1000)
+                 
+               }
+           }
+       }
+       //2.3把ol里面的第一个小li设置类名为show
+         ol.children[0].className='show'
+
+
+       // 6. 克隆第一张图片(li)放到ul最后面 或者手动复制
+        var first = ul.children[0].cloneNode(true)
+        ul.appendChild(first)
+       //5. 点击右侧按钮， 图片滚动一张
+        var n =0
+        //7.1 c 控制小圆圈的播放
+        var c= 0         
+        next.onclick=function(){
+            //6.1 如果走到了最后复制的一张图片，此时我们的ul要快速复原left改为0  称为:无缝滚动
+            if (n===ul.children.length-1) { //活写法:ul.children.length-1 ===死写法:6
+                ul.style.left=0
+                n=0
+            }
+           n++;
+           //5.1照搬计时器函数 到结束
+           function animate(obj, target){
+            //4.4 先清除以前的定时器，只保留当前的一个定时器执行
+            clearInterval(obj.timer);
+            //4.1(上)绑定定时器
+            obj.timer = setInterval(function(){
+            //4.3步长值写到定时器的里面 并改成整数
+            var step =(target-obj.offsetLeft)/10
+            step =step > 0 ? Math.ceil(step) :Math.floor(step) 
+            //4.2如果移动距离够了 停止动画 本质是停止定时器
+            if(obj.offsetLeft===target){
+              clearInterval(obj.timer)
+          }
+          //4.1(下)绑定定时器
+           obj.style.left = obj.offsetLeft + step +'px'
+        },16)
+      }
+       //5.1计时器函数结束
+           //5.2调用函数
+           animate(ul,-n*1000)
+           //7. 点击右侧按钮，小圆圈跟随一起变化 可以再声明一个变量控制小圆圈的播放
+           c++;
+          //7.2 先清除其余小圆圈的current类名
+           for(var i=0; i<ol.children.length; i++){
+               //7.4 如果c===6 说明走到最后我们克隆的这张图片了 我们就复原
+               if (c===6) {  //死写法:6===活写法:ol.children.length
+                   c=0
+               }
+               ol.children[i].className=''
+               //7.3 留下当前的小圆圈的current类名
+               ol.children[c].className='show'
+              }
+        }
+
+
+        //9. 左侧按钮做法 复制右侧代码
+        prev.onclick=function(){
+            //6.1 如果走到了最后复制的一张图片，此时我们的ul要快速复原left改为0  称为:无缝滚动
+            if (n===0) { //活写法:ul.children.length-1 ===死写法:6
+                ul.style.left=-6*bjt.offsetWidth + 'px'
+                n=6
+            }
+           n--;
+           //5.1照搬计时器函数 到结束
+           function animate(obj, target){
+            //4.4 先清除以前的定时器，只保留当前的一个定时器执行
+            clearInterval(obj.timer);
+            //4.1(上)绑定定时器
+            obj.timer = setInterval(function(){
+            //4.3步长值写到定时器的里面 并改成整数
+            var step =(target-obj.offsetLeft)/10
+            step =step > 0 ? Math.ceil(step) :Math.floor(step) 
+            //4.2如果移动距离够了 停止动画 本质是停止定时器
+            if(obj.offsetLeft===target){
+              clearInterval(obj.timer)
+          }
+          //4.1(下)绑定定时器
+           obj.style.left = obj.offsetLeft + step +'px'
+        },16)
+      }
+       //5.1计时器函数结束
+           //5.2调用函数
+           animate(ul,-n*1000)
+           //7. 点击右侧按钮，小圆圈跟随一起变化 可以再声明一个变量控制小圆圈的播放
+           c--;
+          //7.2 先清除其余小圆圈的current类名
+           for(var i=0; i<ol.children.length; i++){
+               //7.4 如果c===6 说明走到最后我们克隆的这张图片了 我们就复原
+               if (c<0) {  //死写法:6===活写法:ol.children.length
+                   c=5
+               }
+               ol.children[i].className=''
+               //7.3 留下当前的小圆圈的current类名
+               ol.children[c].className='show'
+              }
+        }
+
+        //10. 自动播放轮播图
+        var zidong =setInterval(function(){
+            //10.1手动调用点击事件
+            next.click()
+        },1500)
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+body{
+	width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#h1{
+	height: 85px;
+	width: 1200px;
+	/* background-color: aqua; */
+}
+#l1{
+	height: 120px;
+	width: 125px;
+	vertical-align: middle;
+}
+#wel{
+	margin-left: 33px;
+	font-size: 51px;
+	vertical-align: middle;
+	color: #666;
+}
+#nohave{
+	margin-top: 30px;
+	/* color: #888; */
+	margin-left: 920px;
+	font-size: 20px;
+}
+#nohave a{
+	
+	text-decoration: none;
+	color: #666666;
+	font-size: 25px;
+}
+#m1{
+	border: #999 solid 4px;
+	width: 1000px;
+	min-height: 100px;
+	margin: 135px auto 0;
+}
+#s1{
+	width: 500px;
+}
+#f1{
+	width: 400px;
+	margin-top: 70px;
+	margin-left: 65px;
+	margin-bottom: -107px;
+	display: inline-block;
+}
+#t1{
+/* 	margin-top: 60px; */
+}
+/* 用户名输入框 */
+#t1 input[name="username"]{
+	width: 350px;
+	height: 49px;
+	font-size: 16px;
+	background:#fff url(img/u_ico.jpg) 14px 14px no-repeat;
+	text-indent: 45px;
+	border: 2px solid #ededed;
+}
+/* 密码输入框 */
+#t1 input[name="password"]{
+	margin-top: 40px;
+	width: 350px;
+	height: 49px;
+	font-size: 16px;
+	background:#fff url(img/p_ico.jpg) 14px 14px no-repeat;
+	text-indent: 45px;
+	border: 2px solid #ededed;
+}
+/* 提交按钮 */
+#t1 input[name="tijiao"]{
+	margin-top: 40px;
+	width: 350px;
+	height: 49px;
+	font-size: 16px;
+	text-indent: 45px;
+	border: 2px solid #ededed;
+	text-align: center;
+	font-size: 20px;
+	text-indent: 0;
+}
